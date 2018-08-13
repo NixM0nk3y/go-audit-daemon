@@ -1,0 +1,25 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "D/7cJ8oboLL/gQxr57kfvDBtMZE=",
+			"path": "github.com/elastic/go-libaudit",
+			"revision": "ec7a7253716958d85ea854cbef4aaffcd6cbd50b",
+			"revisionTime": "2018-08-07T15:01:12Z"
+		},
+		{
+			"checksumSHA1": "6OK3lLgocjmIUyLo8xNhYGpwE1E=",
+			"path": "github.com/elastic/go-libaudit/auparse",
+			"revision": "ec7a7253716958d85ea854cbef4aaffcd6cbd50b",
+			"revisionTime": "2018-08-07T15:01:12Z"
+		},
+		{
+			"checksumSHA1": "ljd3FhYRJ91cLZz3wsH9BQQ2JbA=",
+			"path": "github.com/pkg/errors",
+			"revision": "816c9085562cd7ee03e7f8188a1cfd942858cded",
+			"revisionTime": "2018-03-11T21:45:15Z"
+		}
+	],
+	"rootPath": "github.com/NixM0nk3y/go-audit-daemon"
+}

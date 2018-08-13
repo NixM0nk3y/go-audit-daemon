@@ -1,0 +1,8 @@
+go-audit-daemon
+go-audit-daemon.yaml
+*.pprof
+*.test
+*.deb
+*.out
+# Vendor
+vendor/*/
