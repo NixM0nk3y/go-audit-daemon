@@ -287,8 +287,6 @@ func addRules(config Config) error {
 
 func buildEvent(msgs []*auparse.AuditMessage, config Config) Event {
 
-    glog.Info("Building event")
-
     auditEvent, err := aucoalesce.CoalesceMessages(msgs)
 
         if err != nil {
