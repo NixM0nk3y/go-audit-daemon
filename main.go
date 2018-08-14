@@ -19,6 +19,7 @@ import (
     "github.com/elastic/go-libaudit"
     "github.com/elastic/go-libaudit/aucoalesce"
     "github.com/elastic/go-libaudit/auparse"
+    "github.com/elastic/go-libaudit/rule"
 )
 
 const (
@@ -129,6 +130,18 @@ func main() {
 
     defer client.Close()
 
+    if err := config.loadRules(); err != nil {
+        glog.Errorln("Failure load audit rules", "error", err)
+        return
+    }
+
+    client.DeleteRules() 
+
+    if err := addRules(config); err != nil {
+        glog.Errorln("Failure adding audit rules", "error", err)
+        return
+    }
+
     as := &AuditSet{
         client: client,
         config: config,
@@ -215,6 +228,61 @@ func main() {
     wg.Wait()
 
     return
+}
+
+func addRules(config Config) error {
+
+        rules := config.rules()
+
+        if len(rules) == 0 {
+                glog.Info("No audit_rules were specified.")
+                return nil
+        }
+
+        client, err := libaudit.NewAuditClient(nil)
+
+        if err != nil {
+                return errors.Wrap(err, "failed to create audit client for adding rules")
+        }
+        defer client.Close()
+
+        // Don't attempt to change configuration if audit rules are locked (enabled == 2).
+        // Will result in EPERM.
+        status, err := client.GetStatus()
+        if err != nil {
+                err = errors.Wrap(err, "failed to get audit status before adding rules")
+                return err
+        }
+        if status.Enabled == auditLocked {
+                return errors.New("Skipping rule configuration: Audit rules are locked")
+        }
+
+        // Delete existing rules.
+        n, err := client.DeleteRules()
+        if err != nil {
+                return errors.Wrap(err, "failed to delete existing rules")
+        }
+        glog.Infof("Deleted %v pre-existing audit rules.", n)
+
+        // Add rule to ignore syscalls from this process
+        if rule, err := buildPIDIgnoreRule(os.Getpid()); err == nil {
+                rules = append([]auditRule{rule}, rules...)
+        } else {
+                glog.Errorf("Failed to build a rule to ignore self: %v", err)
+        }
+        // Add rules from config.
+        var failCount int
+        for _, rule := range rules {
+                if err = client.AddRule(rule.data); err != nil {
+                        // Treat rule add errors as warnings and continue.
+                        err = errors.Wrapf(err, "failed to add audit rule '%v'", rule.flags)
+                        glog.Warningln("Failure adding audit rule", "error", err)
+                        failCount++
+                }
+        }
+        glog.Infof("Successfully added %d of %d audit rules.",
+                len(rules)-failCount, len(rules))
+        return nil
 }
 
 func buildEvent(msgs []*auparse.AuditMessage, config Config) Event {
@@ -787,5 +855,26 @@ func createAuditdData(data map[string]string) common.MapStr {
                 out.Put(key, v)
         }
         return out
+}
+
+func buildPIDIgnoreRule(pid int) (ruleData auditRule, err error) {
+        r := rule.SyscallRule{
+                Type:   rule.AppendSyscallRuleType,
+                List:   "exit",
+                Action: "never",
+                Filters: []rule.FilterSpec{
+                        {
+                                Type:       rule.ValueFilterType,
+                                LHS:        "pid",
+                                Comparator: "=",
+                                RHS:        strconv.Itoa(pid),
+                        },
+                },
+                Syscalls: []string{"all"},
+                Keys:     nil,
+        }
+        ruleData.flags = fmt.Sprintf("-A exit,never -F pid=%d -S all", pid)
+        ruleData.data, err = rule.Build(&r)
+        return ruleData, err
 }
 

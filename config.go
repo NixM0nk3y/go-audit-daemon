@@ -86,6 +86,7 @@ var defaultConfig = Config{
 	RateLimit:              0,
 	RawMessage:             false,
 	Warnings:               false,
+        RuleFiles:             []string{"/etc/go-audit-daemon/audit.rules.d/*.conf"},
 	ReassemblerMaxInFlight: 50,
 	ReassemblerTimeout:     2 * time.Second,
 	StreamBufferQueueSize:  8192,
@@ -178,6 +179,7 @@ func readRules(reader io.Reader, source string, knownRules ruleSet) (rules []aud
 	for lineNum := 1; s.Scan(); lineNum++ {
 		location := fmt.Sprintf("%s:%d", source, lineNum)
 		line := strings.TrimSpace(s.Text())
+
 		if len(line) == 0 || line[0] == '#' {
 			continue
 		}
