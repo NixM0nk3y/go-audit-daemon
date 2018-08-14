@@ -9,8 +9,26 @@
 			"revisionTime": "2018-08-07T15:01:12Z"
 		},
 		{
+			"checksumSHA1": "QTR02jPgqq2P6mZKMWUdAUQPVbQ=",
+			"path": "github.com/elastic/go-libaudit/aucoalesce",
+			"revision": "ec7a7253716958d85ea854cbef4aaffcd6cbd50b",
+			"revisionTime": "2018-08-07T15:01:12Z"
+		},
+		{
 			"checksumSHA1": "6OK3lLgocjmIUyLo8xNhYGpwE1E=",
 			"path": "github.com/elastic/go-libaudit/auparse",
+			"revision": "ec7a7253716958d85ea854cbef4aaffcd6cbd50b",
+			"revisionTime": "2018-08-07T15:01:12Z"
+		},
+		{
+			"checksumSHA1": "zGv2vPwSLoFCRt1kcD81pBzTo+0=",
+			"path": "github.com/elastic/go-libaudit/rule",
+			"revision": "ec7a7253716958d85ea854cbef4aaffcd6cbd50b",
+			"revisionTime": "2018-08-07T15:01:12Z"
+		},
+		{
+			"checksumSHA1": "5C083BvwcAVSKquRXbxXa950/wE=",
+			"path": "github.com/elastic/go-libaudit/rule/flags",
 			"revision": "ec7a7253716958d85ea854cbef4aaffcd6cbd50b",
 			"revisionTime": "2018-08-07T15:01:12Z"
 		},
@@ -31,6 +49,12 @@
 			"path": "github.com/pkg/errors",
 			"revision": "816c9085562cd7ee03e7f8188a1cfd942858cded",
 			"revisionTime": "2018-03-11T21:45:15Z"
+		},
+		{
+			"checksumSHA1": "ZSWoOPUNRr5+3dhkLK3C4cZAQPk=",
+			"path": "gopkg.in/yaml.v2",
+			"revision": "5420a8b6744d3b0345ab293f6fcba19c978f1183",
+			"revisionTime": "2018-03-28T19:50:20Z"
 		}
 	],
 	"rootPath": "github.com/NixM0nk3y/go-audit-daemon"
